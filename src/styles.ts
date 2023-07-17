@@ -1,7 +1,9 @@
 import styled from 'styled-components';
 
 export const AppContainer = styled.div`
-  padding: 8px;
+  padding: 32px 8px 8px 8px;
+  max-width: 1024px;
+  margin: auto;
 `;
 
 export const SelectWrapper = styled.div`
@@ -10,7 +12,7 @@ export const SelectWrapper = styled.div`
 
 export const PhotoDisplay = styled.img`
   max-width: 100%;
-`
+`;
 
 export const modalStyle = {
   content: {

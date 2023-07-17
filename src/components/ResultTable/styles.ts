@@ -28,3 +28,17 @@ export const Header = styled.th<IHeaderStyleProps>`
     width: ${props.width}px;
   `}
 `;
+
+export const Pagination = styled.div`
+  display: flex;
+  justify-content: right;
+  margin-top: 12px;
+
+  button {
+    padding: 4px 12px;
+
+    &:first-child {
+      margin-right: 12px;
+    }
+  }
+`;

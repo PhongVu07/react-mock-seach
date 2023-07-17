@@ -1,35 +1,19 @@
 import React, { useState } from 'react';
 import Modal from 'react-modal';
+import { useQuery } from '@apollo/client';
 
 import ResultTable from './components/ResultTable';
 import SearchBar from './components/SearchBar';
-import { AppContainer, modalStyle, PhotoDisplay, SelectWrapper } from './styles';
+import {
+  AppContainer,
+  modalStyle,
+  PhotoDisplay,
+  SelectWrapper,
+} from './styles';
 import { IPhoto } from './types';
+import { GET_PHOTOS } from './graphql';
 
-const MOCK_DATA = [
-  {
-    albumId: 1,
-    id: 1,
-    title: 'accusamus beatae ad facilis cum similique qui sunt',
-    url: 'https://via.placeholder.com/600/92c952',
-    thumbnailUrl: 'https://via.placeholder.com/150/92c952',
-  },
-  {
-    albumId: 1,
-    id: 2,
-    title: 'reprehenderit est deserunt velit ipsam',
-    url: 'https://via.placeholder.com/600/771796',
-    thumbnailUrl: 'https://via.placeholder.com/150/771796',
-  },
-  {
-    albumId: 1,
-    id: 3,
-    title: 'officia porro iure quia iusto qui ipsa ut modi',
-    url: 'https://via.placeholder.com/600/24f355',
-    thumbnailUrl: 'https://via.placeholder.com/150/24f355',
-  },
-];
-
+const PAGE_LIMIT = 4;
 const TABLE_HEADERS = [
   {
     name: 'ID',
@@ -48,6 +32,18 @@ const TABLE_HEADERS = [
 
 function App() {
   const [selectedPhoto, setSelectedPhoto] = useState<IPhoto>();
+  const [page, setPage] = useState(1);
+  const { loading, error, data } = useQuery(GET_PHOTOS, {
+    variables: {
+      options: {
+        paginate: {
+          page: page,
+          limit: PAGE_LIMIT,
+        },
+      },
+    },
+  });
+  console.log("Log ~ App ~ data:", data)
 
   const renderCellValue = (header: string, photo: IPhoto) => {
     const value = photo[header as keyof IPhoto] as string;
@@ -68,20 +64,27 @@ function App() {
     return <>{value}</>;
   };
 
+  if (loading) return <div>'Loading...'</div>;
+  if (error) return <div>`Error! ${error.message}`</div>;
+
   return (
-    <AppContainer>
+    <AppContainer id="app">
       <SearchBar />
       <ResultTable
         headers={TABLE_HEADERS}
-        data={MOCK_DATA}
+        data={data.photos.data}
+        page={page}
+        setPage={setPage}
+        pageCount={data.photos.meta.totalCount / PAGE_LIMIT}
         renderCellValue={renderCellValue}
       />
       <Modal
+        appElement={document.getElementById('app') as HTMLElement}
         isOpen={!!selectedPhoto}
         style={modalStyle}
         onRequestClose={() => setSelectedPhoto(undefined)}
       >
-        <PhotoDisplay src={selectedPhoto?.url} alt="photo"/>
+        <PhotoDisplay src={selectedPhoto?.url} alt="photo" />
       </Modal>
     </AppContainer>
   );
