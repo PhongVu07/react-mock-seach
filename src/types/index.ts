@@ -4,3 +4,9 @@ export interface IPhoto {
   url: string;
   thumbnailUrl: string;
 }
+
+export interface IPagination {
+  page: number;
+  pageCount: number;
+  pageLimit: number;
+}

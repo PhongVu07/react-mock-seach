@@ -1,5 +1,5 @@
 import React from 'react';
-import { IPhoto } from '../../types';
+import { IPagination, IPhoto } from '../../types';
 import { Header, Pagination, StyledTable } from './styles';
 
 interface IHeader {
@@ -11,20 +11,27 @@ interface IHeader {
 interface IProps {
   headers: IHeader[];
   data: IPhoto[];
-  page: number;
-  pageCount: number;
-  setPage: (page: number) => void
+  pagination: IPagination;
+  setPagination: React.Dispatch<React.SetStateAction<IPagination>>;
   renderCellValue: (header: string, photo: IPhoto) => React.JSX.Element;
 }
 
 const ResultTable: React.FC<IProps> = ({
   headers = [],
   data = [],
-  page,
-  pageCount,
-  setPage,
+  pagination,
+  setPagination,
   renderCellValue,
 }) => {
+  const { page, pageCount } = pagination;
+
+  const handleChangePage = (page: number) => {
+    setPagination((prevPagination: IPagination) => ({
+      ...prevPagination,
+      page,
+    }));
+  };
+
   return (
     <div>
       <StyledTable>
@@ -40,7 +47,7 @@ const ResultTable: React.FC<IProps> = ({
         <tbody>
           {data.map((photo) => {
             return (
-              <tr key={photo.id}>
+              <tr key={photo.id} data-testid="data-row">
                 {headers.map(({ value }) => (
                   <td key={value}>{renderCellValue(value, photo)}</td>
                 ))}
@@ -50,8 +57,18 @@ const ResultTable: React.FC<IProps> = ({
         </tbody>
       </StyledTable>
       <Pagination>
-        <button disabled={page === 1} onClick={() => setPage(page - 1)}>Prev</button>
-        <button disabled={page === pageCount} onClick={() => setPage(page + 1)}>Next</button>
+        <button
+          disabled={page === 1}
+          onClick={() => handleChangePage(page - 1)}
+        >
+          Prev
+        </button>
+        <button
+          disabled={page >= pageCount}
+          onClick={() => handleChangePage(page + 1)}
+        >
+          Next
+        </button>
       </Pagination>
     </div>
   );

@@ -6,6 +6,17 @@ export const AppContainer = styled.div`
   margin: auto;
 `;
 
+export const ResultSummary = styled.ul`
+  display: flex;
+  justify-content: right;
+
+  li {
+    margin-left: 32px;
+    list-style-type: none;
+    font-weight: bold;
+  }
+`;
+
 export const SelectWrapper = styled.div`
   cursor: pointer;
 `;
