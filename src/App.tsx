@@ -51,7 +51,7 @@ function App() {
     if (header === 'thumbnailUrl') {
       return (
         <SelectWrapper onClick={() => setSelectedPhoto(photo)}>
-          <img src={value} alt="photo thumbnail" />
+          <img src={value} alt="photo thumbnail" width={150} height={150}/>
         </SelectWrapper>
       );
     }
